@@ -3,11 +3,11 @@ version: 0.2
 phases:
   pre_build:
       commands:     
-       - echo "Logging in to Docker Hub..."
-      - SECRET=$(aws secretsmanager get-secret-value --secret-id dockerhub/credentials --query SecretString --output text)
-      - DOCKER_USERNAME=$(echo $SECRET | jq -r '.username')
-      - DOCKER_PASSWORD=$(echo $SECRET | jq -r '.password')
-      - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+      - echo Logging in to Docker Hub
+      - aws secretsmanager get-secret-value --secret-id dockerhub-creds --query SecretString --output text > secret.json
+      - export DOCKER_USERNAME=$(jq -r .username secret.json)
+      - export DOCKER_PASSWORD=$(jq -r .password secret.json)
+      - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       - echo Logging in to Amazon ECR...
       - aws --version
       - REPOSITORY_URI=802870950160.dkr.ecr.us-east-1.amazonaws.com/nextjs-demo-repository
