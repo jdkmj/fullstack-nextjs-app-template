@@ -4,7 +4,7 @@ phases:
   pre_build:
     commands:     
       - echo Logging in to Docker Hub
-      - aws secretsmanager get-secret-value --secret-id dockerhub-creds --query SecretString --output text > secret.json
+      - aws secretsmanager get-secret-value --secret-id dockerhub/credentials --query SecretString --output text > secret.json
       - export DOCKER_USERNAME=$(jq -r .username secret.json)
       - export DOCKER_PASSWORD=$(jq -r .password secret.json)
       - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
